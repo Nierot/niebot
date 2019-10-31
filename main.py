@@ -11,16 +11,32 @@ GUILD = os.getenv('DISCORD_GUILD')
 bot = commands.Bot(command_prefix=".")
 client = discord.Client()
 
+quotes = [
+    "Oof",
+    "yeet",
+    "reee",
+    "autism",
+    "iets"
+]
+robloxquotes = [
+    "Tycoon > obby",
+    "Counter-Blox is better than Counter-Strike",
+    "Oof",
+    "OOOOF",
+    "Go commit die!"
+]
+
+bloxquotes = [
+    "OOF",
+    "oof",
+    "OOOF!",
+    "of!",
+    "oef!",
+    "REEEEEEE"
+]
+
 @bot.command(name="tyfus")
 async def bloxquote(ctx):
-    bloxquotes = [
-        "OOF",
-        "oof",
-        "OOOF!",
-        "of!",
-        "oef!",
-        "REEEEEEE"
-    ]
     response = random.choice(bloxquotes)
     await ctx.send(response)
 
@@ -49,28 +65,18 @@ async def bloxquote(ctx):
 
 @bot.command(name="rblx")
 async def rlbx(ctx):
-    if message.author == client.user:
-        return
-    quotes = [
-        "Oof",
-        "yeet",
-        "reee",
-        "autism",
-        "iets"
-    ]
-    robloxquotes = [
-        "Tycoon > obby",
-        "Counter-Blox is better than Counter-Strike",
-        "Oof",
-        "OOOOF",
-        "Go commit die!"
-    ]
-    if message.content == "autism":
-        response = random.choice(quotes)
-        await message.channel.send(response)
-    elif message.content == "roblox":
-        response = random.choice(robloxquotes)
-        await message.channel.send(response)
+    response = random.choice(bloxquotes)
+    await ctx.send(response)
+
+@bot.command(name="daddy")
+async def tutkegel(ctx):
+    response = ":DADDY:"
+    await ctx.send(response)
+
+
+
+
+
 
 bot.run(token)
-#client.run(token)
+
