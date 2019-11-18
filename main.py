@@ -8,11 +8,10 @@ load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
-bot = commands.Bot(command_prefix=".")
-client = discord.Client()
+bot = commands.Bot(command_prefix="!")
 
 quotes = [
-    "Oof",
+    "<:lol:646090003050659850>",
     "yeet",
     "reee",
     "autism",
@@ -37,9 +36,16 @@ bloxquotes = [
 
 @bot.command(name="tyfus")
 async def bloxquote(ctx):
-    response = random.choice(bloxquotes)
+    #message.channel.send("<:lol:646089960792916018>")
+    response = "<:lol:646089960792916018>"
     await ctx.send(response)
 
+@bot.command(name="lmao")
+async def lmao(ctx):
+    response =         response = ("<:lol:646089960792916018>""<:lol:646089960792916018>""<:lol:646089960792916018>"
+                    "WHO DID THIS"
+                    "<:lol:646089960792916018>""<:lol:646089960792916018>""<:lol:646089960792916018>")
+    await ctx.send(response)
 
 # @client.event
 # async def on_ready():
