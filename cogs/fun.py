@@ -13,7 +13,7 @@ class Fun(commands.Cog):
     @commands.command(name="avatar",aliases=['pf'])
     async def avatar(self, ctx, user: discord.User):
         """
-        Laat de profielfoto van iemand zien
+        Laat de profielfoto van iemand zien, gemaakt door Davvos11
         """
         member = ctx.guild.get_member(user.id)
 
@@ -34,7 +34,7 @@ class Fun(commands.Cog):
     @commands.command(name="mock", aliases=["bespot"])
     async def mock(self, ctx, user: discord.User):
         """
-        Zet iemand op zijn plaats
+        Zet iemand op zijn plaats, gemaakt door Davvos11
         """
         author: discord.User = ctx.author
         if author == user:

@@ -5,6 +5,10 @@ from pyquery import PyQuery
 import re
 import urllib.parse
 
+"""
+credits naar Davvos11
+"""
+
 class Pils(commands.Cog):
 
     def __init__(self, bot):
