@@ -4,6 +4,7 @@ import secrets
 import cogs.fun as fun
 import cogs.text as text
 import cogs.pils as pils
+import cogs.mc as mc
 import aiohttp
 
 bot = commands.Bot(command_prefix="!")
@@ -19,6 +20,7 @@ class Bot:
         self.bot.add_cog(fun.Fun(self.bot))
         self.bot.add_cog(text.Text(self.bot))
         self.bot.add_cog(pils.Pils(self.bot))
+        self.bot.add_cog(mc.Mc(self.bot))
 
 
     def run(self):
