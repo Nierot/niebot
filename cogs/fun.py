@@ -10,10 +10,11 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    #Made by Davvos11
     @commands.command(name="avatar",aliases=['pf'])
     async def avatar(self, ctx, user: discord.User):
         """
-        Laat de profielfoto van iemand zien, gemaakt door Davvos11
+            Laat de profielfoto van iemand zien.
         """
         member = ctx.guild.get_member(user.id)
 
@@ -31,10 +32,11 @@ class Fun(commands.Cog):
             await ctx.send('Wie?')
             raise error
 
+    #Made by Davvoss11
     @commands.command(name="mock", aliases=["bespot"])
     async def mock(self, ctx, user: discord.User):
         """
-        Zet iemand op zijn plaats, gemaakt door Davvos11
+            Zet iemand op zijn plaats.
         """
         author: discord.User = ctx.author
         if author == user:
