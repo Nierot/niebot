@@ -61,6 +61,18 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
 
+    @commands.command(name="playing")
+    async def playing(self, ctx, *args):
+        if len(args) == 0:
+            args = "Aardappel"
+        else:
+            temp = ''
+            for i in args:
+                temp = temp + " " + i
+            args = temp
+        await self.bot.change_presence(activity=discord.Game(name=args))
+
+
     @commands.command(name="meme")
     async def meme(self, ctx, args):
         """
@@ -117,6 +129,7 @@ class Fun(commands.Cog):
                 embed.set_thumbnail(url=meme_thumbnail)
             embed.set_author(name="/u/"+meme_author, url='https://reddit.com/u/' + meme_author)
             await ctx.send(embed=embed)
+
 
     async def on_message_lmao(self, message: discord.Message):
         if "lmao" in message.content.lower():

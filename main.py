@@ -12,7 +12,7 @@ class Bot:
 
     def __init__(self):
         self.token = secrets.BOT_TOKEN
-        self.bot = commands.Bot(command_prefix="!", description="Yeetmeister9000 is here to help!")
+        self.bot = commands.Bot(command_prefix="yeet ", description="Yeetmeister9000 is here to help!")
 
 
     def load_cogs(self):
@@ -32,6 +32,7 @@ class Bot:
             print('------')
             print(discord.utils.oauth_url(self.bot.user.id))
         self.bot.run(self.token)
+
 
 
 if __name__ == "__main__":
