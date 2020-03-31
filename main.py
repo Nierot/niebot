@@ -36,7 +36,6 @@ class Bot:
         self.bot.run(self.token)
 
 
-
 if __name__ == "__main__":
     bot = Bot()
     bot.run()
