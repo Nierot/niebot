@@ -1,88 +1,39 @@
-import os
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
-import random
-
-load_dotenv()
-token = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+import secrets
+import cogs.fun as fun
+import cogs.text as text
+import cogs.pils as pils
+import aiohttp
 
 bot = commands.Bot(command_prefix="!")
 
-quotes = [
-    "<:lol:646090003050659850>",
-    "yeet",
-    "reee",
-    "autism",
-    "iets"
-]
-robloxquotes = [
-    "Tycoon > obby",
-    "Counter-Blox is better than Counter-Strike",
-    "Oof",
-    "OOOOF",
-    "Go commit die!"
-]
+class Bot:
 
-bloxquotes = [
-    "OOF",
-    "oof",
-    "OOOF!",
-    "of!",
-    "oef!",
-    "REEEEEEE"
-]
-
-@bot.command(name="tyfus")
-async def bloxquote(ctx):
-    #message.channel.send("<:lol:646089960792916018>")
-    response = "<:lol:646089960792916018>"
-    await ctx.send(response)
-
-@bot.command(name="lmao")
-async def lmao(ctx):
-    response =         response = ("<:lol:646089960792916018>""<:lol:646089960792916018>""<:lol:646089960792916018>"
-                    "WHO DID THIS"
-                    "<:lol:646089960792916018>""<:lol:646089960792916018>""<:lol:646089960792916018>")
-    await ctx.send(response)
-
-# @client.event
-# async def on_ready():
-#     guild = discord.utils.get(client.guilds, name=GUILD)
-#     print(
-#         f'{client.user} is connected to the following guild:\n'
-#         f'{guild.name}(id: {guild.id})'
-#     )
-#     members = '\n - '.join([member.name for member in guild.members])
-#     print(f'Guild Members:\n - {members}')
-
-# class CustomClient(discord.Client):
-#     async def on_ready(self):
-#         print(f'{self.user} has connected to Discord!')
+    def __init__(self):
+        self.token = secrets.BOT_TOKEN
+        self.bot = commands.Bot(command_prefix="!", description="Yeetmeister9000 is here to help!")
 
 
-# @client.event
-# async def on_member_join(member):
-#     await member.create_dm()
-#     await member.dm_channel.send(
-#         f'Hi {member.name}, welcome to my Discord server!'
-#     )
-
-@bot.command(name="rblx")
-async def rlbx(ctx):
-    response = random.choice(bloxquotes)
-    await ctx.send(response)
-
-@bot.command(name="daddy")
-async def tutkegel(ctx):
-    response = ":DADDY:"
-    await ctx.send(response)
+    def load_cogs(self):
+        self.bot.add_cog(fun.Fun(self.bot))
+        self.bot.add_cog(text.Text(self.bot))
+        self.bot.add_cog(pils.Pils(self.bot))
 
 
+    def run(self):
+        self.load_cogs()
+        @self.bot.event
+        async def on_ready():
+            self.bot._session = aiohttp.ClientSession()
+            print('Logged in as')
+            print(self.bot.user.name)
+            print(self.bot.user.id)
+            print('------')
+            print(discord.utils.oauth_url(self.bot.user.id))
+        self.bot.run(self.token)
 
 
-
-
-bot.run(token)
-
+if __name__ == "__main__":
+    bot = Bot()
+    bot.run()
