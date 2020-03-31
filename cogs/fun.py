@@ -117,3 +117,23 @@ class Fun(commands.Cog):
                 embed.set_thumbnail(url=meme_thumbnail)
             embed.set_author(name="/u/"+meme_author, url='https://reddit.com/u/' + meme_author)
             await ctx.send(embed=embed)
+
+    async def on_message_lmao(self, message: discord.Message):
+        if "lmao" in message.content.lower():
+            response = ("<:lol:646089960792916018>""<:lol:646089960792916018>""<:lol:646089960792916018>"
+                    "WHO DID THIS"
+                    "<:lol:646089960792916018>""<:lol:646089960792916018>""<:lol:646089960792916018>")
+            await message.channel.send(response)
+
+    async def on_message_alexa(self, message: discord.Message):
+        if "this is so sad" in message.content.lower():
+            await message.channel.send("Alexa, play Despacito")
+
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        if message.author.bot:
+            return
+        await self.on_message_alexa(message)
+        await self.on_message_lmao(message)
+
