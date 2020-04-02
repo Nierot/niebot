@@ -7,8 +7,6 @@ import cogs.pils as pils
 import cogs.mc as mc
 import aiohttp
 
-bot = commands.Bot(command_prefix="!")
-
 class Bot:
 
     def __init__(self):
