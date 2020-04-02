@@ -1,0 +1,4 @@
+aiohttp
+discord.py[voice]
+pyquery
+urllib3
