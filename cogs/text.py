@@ -15,7 +15,7 @@ class Text(commands.Cog):
             await channel.send("Welkom {0.mention}.".format(member))
 
 
-    @commands.command(name="hoegaathet", aliases=["hoe_gaat_het"])
+    @commands.command(name="hoegaathet", aliases=["hoe_gaat_het", "hoeishet"])
     async def hoegaathet(self, ctx, *, member: discord.Member = None):
         """Vraagt hoe het gaat"""
         member = member or ctx.author
