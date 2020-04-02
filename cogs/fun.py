@@ -115,10 +115,16 @@ class Fun(commands.Cog):
             await message.channel.send("Alexa, play Despacito")
 
 
+    async def on_message_best(self, message: discord.Message):
+        if "best" in message.content.lower():
+            await message.channel.send("[REACTIE]")
+
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         if message.author.bot:
             return
         await self.on_message_alexa(message)
         await self.on_message_lmao(message)
+        await self.on_message_best(message)
 
