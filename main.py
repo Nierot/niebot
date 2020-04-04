@@ -1,10 +1,6 @@
 import discord
 from discord.ext import commands
 import secrets
-import cogs.fun as fun
-import cogs.text as text
-import cogs.pils as pils
-import cogs.mc as mc
 import aiohttp
 
 class Bot:
