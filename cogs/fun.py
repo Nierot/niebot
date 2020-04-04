@@ -33,7 +33,7 @@ class Fun(commands.Cog):
             raise error
 
 
-    @commands.command(name="playing")
+    @commands.command(name="playing", hidden=True)
     async def playing(self, ctx, *args):
         if len(args) == 0:
             args = "Aardappel"

@@ -9,13 +9,15 @@ class Admin(commands.Cog, name='Helper'):
         self.bot = bot
 
 
-    @commands.command(name='reload', hidden=True)
+    @commands.command(name='reload', hidden=False)
     async def _reload(self, ctx):
-        if ctx.message.author.id == secrets.OWNER_ID:
-            self.reload(ctx)
+        print("reloading")
+        if str(ctx.message.author.id) == str(secrets.OWNER_ID):
+            await self.reload(ctx)
 
 
     async def reload(self, ctx):
+        print("Reloading")
         try:
             for ext in self.extensions:
                 self.bot.reload_extension(ext)
@@ -23,7 +25,7 @@ class Admin(commands.Cog, name='Helper'):
                 print("--------- {}".format(ext.replace('cogs.', '')))
                 print()
         except Exception as e:
-            await ctx.send(e)
+            print(e)
 
     
     # @commands.Cog.listener()
