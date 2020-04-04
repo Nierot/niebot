@@ -133,7 +133,7 @@ class Youtube(commands.Cog, name='youtube'):
         return src
 
     async def _play_audio(self, guild, song_id):
-        source = await self._new_audio_source(os.path.abspath('/music/{}.webm'.format(song_id)))
+        source = await self._new_audio_source('/music/{}.webm'.format(song_id))
         try:
             self.voice_client[guild].play(source)
         except discord.ClientException as ce:
