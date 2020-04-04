@@ -125,3 +125,5 @@ class Pils(commands.Cog):
                 'original_price': original_price, 'sale_price': sale_price, 'sale': sale, 'PPL': sale_price_liter,
                 'end_date': end_date}
 
+def setup(bot):
+    bot.add_cog(Pils(bot))

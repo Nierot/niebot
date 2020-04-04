@@ -128,3 +128,6 @@ class Fun(commands.Cog):
         await self.on_message_lmao(message)
         await self.on_message_best(message)
 
+
+def setup(bot):
+    bot.add_cog(Fun(bot))

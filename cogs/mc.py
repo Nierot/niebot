@@ -56,3 +56,7 @@ class Mc(commands.Cog):
 
     def _sort_leaderboard(self, board):
         return sorted(board, key=lambda k: k.get('fish', 0), reverse=True)
+
+
+def setup(bot):
+    bot.add_cog(Mc(bot))

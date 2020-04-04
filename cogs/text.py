@@ -24,3 +24,6 @@ class Text(commands.Cog):
         else:
             await ctx.send('HALLO {0.name}, HOE GAAT HET?!?!?!?!?!?.'.format(member))
         self._last_member = member
+
+def setup(bot):
+    bot.add_cog(Text(bot))
