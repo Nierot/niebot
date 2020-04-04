@@ -106,7 +106,7 @@ class Youtube(commands.Cog, name='youtube'):
             'forcefilename': 'True',
             'audio-format': 'mp3',
             'format': 'bestaudio/best',
-            'outtmpl': '/music/%(id)s.%(ext)s',
+            'outtmpl': os.path.abspath('/music/%(id)s.%(ext)s'),
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([link])
