@@ -5,13 +5,15 @@ import aiohttp
 
 class Bot:
 
-    extensions = ['cogs.youtube', 'cogs.admin', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun']
-
     def __init__(self):
         self.token = secrets.BOT_TOKEN
         self.bot = commands.Bot(command_prefix="yeet ", description="Yeetmeister9000 is here to help!")
+        self.bot.case_insensitive = True
         self.bot._voice_clients = {}
         self.bot._queue = {}
+        self.bot._playing = {}
+        self.bot._debug = False
+        self.extensions = ['cogs.youtube', 'cogs.admin', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun', 'cogs.dromendans']
 
 
     def load_extensions(self):

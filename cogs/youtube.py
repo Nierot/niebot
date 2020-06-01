@@ -133,8 +133,13 @@ class Youtube(commands.Cog, name='youtube'):
         return src
 
     async def _play_audio(self, guild, song_id):
-        source = await self._new_audio_source('/music/{}.webm'.format(song_id))
+        source = None
+        for files in os.walk('music'):
+            for file in files[2]:
+                if song_id in file:
+                    source = await self._new_audio_source('music\{}'.format(file))
         try:
+            self.bot._playing[guild] = song_id
             self.voice_client[guild].play(source)
         except discord.ClientException as ce:
             print("Already playing audio or not connected")
@@ -160,7 +165,7 @@ class Youtube(commands.Cog, name='youtube'):
             song = queue[random.randint(0, len(queue) - 1)]
             await self._set_playing_status(song.title)
             await self._play_audio(guild, song.song_id)
-        except discord.ClientException:
+        except KeyError:
             await ctx.send("There is nothing in the queue!")
 
     

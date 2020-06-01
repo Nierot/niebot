@@ -3,17 +3,21 @@ import secrets
 
 class Admin(commands.Cog, name='Helper'):
 
-    extensions = ['cogs.youtube', 'cogs.admin', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun']
-
     def __init__(self, bot):
         self.bot = bot
+        self.extensions = bot.extensions
 
-
-    @commands.command(name='reload', hidden=False)
-    async def _reload(self, ctx):
-        print("reloading")
+    @commands.command(name='debug', hidden=True)
+    async def _toggle_debug(self, ctx):
         if str(ctx.message.author.id) == str(secrets.OWNER_ID):
-            await self.reload(ctx)
+            self.bot._debug = not self.bot._debug
+
+    @commands.command(name='reload', hidden=True)
+    async def _reload(self, ctx):
+        if self.bot._debug:
+            print("reloading")
+            if str(ctx.message.author.id) == str(secrets.OWNER_ID):
+                await self.reload(ctx)
 
 
     async def reload(self, ctx):
@@ -28,10 +32,11 @@ class Admin(commands.Cog, name='Helper'):
             print(e)
 
     
-    # @commands.Cog.listener()
-    # async def on_message(self, message):
-    #     if message.content.lower() == 'r':
-    #         await self.reload(message.channel)
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if self.bot._debug:
+            if message.content.lower() == 'r':
+                await self.reload(message.channel)
 
 
 def setup(bot):
