@@ -34,7 +34,7 @@ class Dromendans(commands.Cog, name="dromendans"):
     async def _dromendans(self, ctx):
         channel = ctx.message.author.voice.channel
         guild = ctx.message.author.guild.id
-        source = discord.FFmpegPCMAudio('music\\dromendans.mp3')
+        source = discord.FFmpegPCMAudio('music/dromendans.mp3')
         try:
             self.voice_client[guild] = await channel.connect()
         except Exception as e:
