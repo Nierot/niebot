@@ -5,7 +5,6 @@ class Cleverbot(commands.Cog, name="Cleverbot"):
 
     def __init__(self, bot):
         self.bot = bot
-        geckodriver_autoinstaller.install()
         self.cb = cleverbotfree.cbfree.Cleverbot()
 
 
