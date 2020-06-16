@@ -16,7 +16,7 @@ class Youtube(commands.Cog, name='youtube'):
     def __init__(self, bot):
         self.bot = bot
         self.voice_client = self.bot._voice_clients
-        self.playing = {}
+        self.playing = self.bot._playing
 
 
     @commands.command(name="search", aliases=['zoek'])
@@ -143,8 +143,6 @@ class Youtube(commands.Cog, name='youtube'):
             self.voice_client[guild].play(source)
         except discord.ClientException as ce:
             print("Already playing audio or not connected")
-        # except Exception as e:
-        #     print(e)
 
 
     async def _add_to_queue(self, guild, song):
@@ -166,7 +164,8 @@ class Youtube(commands.Cog, name='youtube'):
             await self._set_playing_status(song.title)
             await self._play_audio(guild, song.song_id)
         except KeyError:
-            await ctx.send("There is nothing in the queue!")
+            await ctx.send("Queue is empty!")
+            await self._leave_channel(guild)
 
     
     async def _get_queue(self, guild):
@@ -175,6 +174,14 @@ class Youtube(commands.Cog, name='youtube'):
             return queue
         except KeyError:
             return []
+
+
+    async def __queue_thread(self, guild, song, ctx):
+        while self.voice_client[guild].is_playing():
+            asyncio.sleep(1)
+        self.bot._queue[guild].remove(song)
+        await self._play_from_queue(guild, ctx)
+
 
 
 class Song():

@@ -1,0 +1,2 @@
+1592325445920	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Firefox Developer Edition\\firefox.exe" "-marionette" "--headless" "-foreground" "-no-remote" "-profile" "C:\\Users\\Niels\\AppData\\Local\\Temp\\rust_mozprofileBZss4a"
+*** You are running in headless mode.
