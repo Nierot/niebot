@@ -1,5 +1,4 @@
 import cleverbotfree.cbfree
-import geckodriver_autoinstaller
 from discord.ext import commands
 
 class Cleverbot(commands.Cog, name="Cleverbot"):
