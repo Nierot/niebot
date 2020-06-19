@@ -17,10 +17,20 @@ class Dromendans(commands.Cog, name="dromendans"):
         """
         await ctx.send("Dromendans Xdddddd")
         self.stopped[ctx.message.guild.id] = False
-        await self._dromendans(ctx)
+        await self._dromendans(ctx, 'music/dromendans.mp3')
 
 
-    @commands.command(name="geen_dromendans_meer_pls")
+    @commands.command(name="putin")
+    async def putin(self, ctx):
+        """
+        putin xd
+        """
+        await ctx.send("PUTIN HAHAHAHAHA")
+        self.stopped[ctx.messgage.guild.id] = False
+        await self._dromendans(ctx, 'music/putin.mp3')
+
+
+    @commands.command(name="geen_dromendans_meer_pls", aliases=["geen_putin_meer_pls"])
     async def _stop_dromendans(self, ctx):
         """
         For people who are laf
@@ -31,10 +41,10 @@ class Dromendans(commands.Cog, name="dromendans"):
         await self.voice_client[guild].disconnect()
 
 
-    async def _dromendans(self, ctx):
+    async def _dromendans(self, ctx, music):
         channel = ctx.message.author.voice.channel
         guild = ctx.message.author.guild.id
-        source = discord.FFmpegPCMAudio('music/dromendans.mp3')
+        source = discord.FFmpegPCMAudio(music)
         try:
             self.voice_client[guild] = await channel.connect()
         except Exception as e:

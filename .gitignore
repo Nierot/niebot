@@ -1,4 +1,6 @@
 secrets.py
 *.pyc
 
-music/
+*.webm
+*.m4a
+*.mp4
