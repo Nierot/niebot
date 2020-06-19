@@ -26,7 +26,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         putin xd
         """
         await ctx.send("PUTIN HAHAHAHAHA")
-        self.stopped[ctx.messgage.guild.id] = False
+        self.stopped[ctx.message.guild.id] = False
         await self._dromendans(ctx, 'music/putin.mp3')
 
 
