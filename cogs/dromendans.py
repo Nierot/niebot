@@ -60,7 +60,7 @@ class Dromendans(commands.Cog, name="dromendans"):
             if self.stopped[guild]:
                 break
             if not self.voice_client[guild].is_playing():
-                await self._dromendans(ctx)
+                await self._dromendans(ctx, music)
         
 
 def setup(bot):
