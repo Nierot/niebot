@@ -24,7 +24,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         """
         await ctx.send("Dromendans Xdddddd")
         self.stopped[ctx.message.guild.id] = False
-        await self._dromendans(ctx, 'music/dromendans.mp3', 0.5)
+        await self._dromendans(ctx, 'music/dromendans.mp3', 1.0)
 
 
     @commands.command(name="putin")
@@ -34,7 +34,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         """
         await ctx.send("PUTIN HAHAHAHAHA")
         self.stopped[ctx.message.guild.id] = False
-        await self._dromendans(ctx, 'music/putin.mp3', 0.5)
+        await self._dromendans(ctx, 'music/putin.mp3', 1.0)
 
 
     @commands.command(name="upload")
@@ -55,7 +55,7 @@ class Dromendans(commands.Cog, name="dromendans"):
                 await ctx.send("doe het dan wel goed")
                 return
             music = args[0]
-            volume = 0.5
+            volume = 1.0
             if (len(args) == 2):
                 volume = float(args[1])
 
