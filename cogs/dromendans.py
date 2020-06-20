@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import random
 import asyncio
+from os import listdir
 
 class Dromendans(commands.Cog, name="dromendans"):
     """
@@ -36,6 +37,11 @@ class Dromendans(commands.Cog, name="dromendans"):
         await self._dromendans(ctx, 'music/putin.mp3', 0.5)
 
 
+    @commands.command(name="upload")
+    async def upload(self, ctx):
+        await ctx.send("https://6ix9ine.nierot.com/")
+
+
     @commands.command(name="troep")
     async def troep(self, ctx, *args):
         """
@@ -57,6 +63,22 @@ class Dromendans(commands.Cog, name="dromendans"):
             await ctx.send(random.choice(self.troep))
             self.stopped[ctx.message.guild.id] = False
             await self._dromendans(ctx, 'music/' + music + '.mp3', volume)
+
+
+    @commands.command(name="shitlist")
+    async def shitlist(self, ctx):
+        """
+        Alle troep mogelijk
+        """
+        embed: discord.Embed = discord.Embed(
+            color = discord.Color.blue()
+        )
+        values = ''
+        for x in listdir('music'):
+            values += x.split('.')[0] + '\n'
+        embed.add_field(name="Kut muziek", value=values)
+        await ctx.send(embed=embed)
+            
 
 
     @commands.command(name="geen_dromendans_meer_pls", aliases=["geen_putin_meer_pls", "nee"])
