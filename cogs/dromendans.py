@@ -9,6 +9,7 @@ class Dromendans(commands.Cog, name="dromendans"):
     Elke update heeft dit minder met dromendans te maken, het blijft wel dromendans heten want dat is handig.
     """
 
+
     def __init__(self, bot):
         self.bot = bot
         self.voice_client = self.bot._voice_clients
@@ -16,6 +17,11 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.troep = ["Dit wordt kut", "Hier heb ik nou geen zin in", "jesus wat slecht", "ik heb deathmetal gehoord dat beter is dan dit"]
         self.root = ''
 
+
+    """
+    TODO Add a progress bar
+    TODO Add a auto leave
+    """
 
     @commands.command(name="dromendans")
     async def dromendans(self, ctx):
@@ -87,9 +93,12 @@ class Dromendans(commands.Cog, name="dromendans"):
         For people who are laf
         """
         guild = ctx.message.author.guild.id
-        self.stopped[guild] = True
-        await ctx.send("laf")
-        await self.voice_client[guild].disconnect()
+        if (random.randint(0,10) > 3):
+            self.stopped[guild] = True
+            await ctx.send("laf")
+            await self.voice_client[guild].disconnect()
+        else:
+            await ctx.send("Lol nee")
 
 
     async def _dromendans(self, ctx, music, volume) -> None:
