@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import secrets
 import aiohttp
+from lyricsgenius import Genius
 
 class Bot:
 
@@ -13,7 +14,8 @@ class Bot:
         self.bot._queue = {}
         self.bot._playing = {}
         self.bot._debug = False
-        self.extensions = ['cogs.youtube', 'cogs.admin', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun', 'cogs.dromendans', 'cogs.cleverbot']
+        self.extensions = ['cogs.youtube', 'cogs.admin', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun', 'cogs.dromendans'] #, 'cogs.cleverbot']
+        self.genius = Genius(secrets.GENIUS_CLIENT_SECRET)
 
 
     def load_extensions(self):
