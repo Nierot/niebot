@@ -2,7 +2,6 @@ from discord.ext import commands
 import discord
 import random
 import asyncio
-import lyricsgenius
 from os import listdir
 import aiohttp
 from bs4 import BeautifulSoup
