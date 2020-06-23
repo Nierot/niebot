@@ -125,6 +125,7 @@ class Fun(commands.Cog):
         for msg in m:
             if msg in message.content.lower():
                 await message.channel.send(msg)
+                break
 
 
     @commands.Cog.listener()
