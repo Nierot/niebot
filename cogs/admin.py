@@ -7,16 +7,19 @@ class Admin(commands.Cog, name='Helper'):
         self.bot = bot
         self.extensions = bot.extensions
 
+
     @commands.command(name='debug', hidden=True)
     async def _toggle_debug(self, ctx):
-        if str(ctx.message.author.id) == str(secrets.OWNER_ID):
+        if str(ctx.message.author.id) == str(self.bot.secrets.OWNER_ID):
             self.bot._debug = not self.bot._debug
+            await ctx.send("Debug mode: " + str(self.bot._debug))
+
 
     @commands.command(name='reload', hidden=True)
     async def _reload(self, ctx):
         if self.bot._debug:
             print("reloading")
-            if str(ctx.message.author.id) == str(secrets.OWNER_ID):
+            if str(ctx.message.author.id) == str(self.bot.secrets.OWNER_ID):
                 await self.reload(ctx)
 
 
