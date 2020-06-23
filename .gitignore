@@ -4,3 +4,4 @@ secrets.py
 *.webm
 *.m4a
 *.mp4
+geckodriver.log
