@@ -124,7 +124,7 @@ class Fun(commands.Cog):
         m = ["jo", "yo", "jow", "joww", "jowww", "jowwww"]
         for msg in m:
             if msg in message.content.lower():
-                await message.channel.send(m)
+                await message.channel.send(msg)
 
 
     @commands.Cog.listener()
