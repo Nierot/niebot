@@ -121,8 +121,10 @@ class Fun(commands.Cog):
 
 
     async def on_message_jo(self, message):
-        if "jo" or "yo" or "jow" or "joww" or "jowww" in message:
-            await message.channel.send("Joww")
+        m = ["jo", "yo", "jow", "joww", "jowww", "jowwww"]
+        for msg in m:
+            if m in message:
+                await message.channel.send(m)
 
 
     @commands.Cog.listener()
