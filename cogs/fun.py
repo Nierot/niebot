@@ -120,6 +120,11 @@ class Fun(commands.Cog):
             await message.channel.send("[REACTIE]")
 
 
+    async def on_message_jo(self, message):
+        if "jo" or "yo" or "jow" or "joww" or "jowww" in message:
+            await message.channel.send("Joww")
+
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         if message.author.bot:
@@ -127,6 +132,7 @@ class Fun(commands.Cog):
         await self.on_message_alexa(message)
         await self.on_message_lmao(message)
         await self.on_message_best(message)
+        await self.on_message_jo(message)
 
 
 def setup(bot):
