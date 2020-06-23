@@ -121,7 +121,7 @@ class Fun(commands.Cog):
 
 
     async def on_message_jo(self, message):
-        m = ["jo", "yo", "jow", "joww", "jowww", "jowwww"]
+        m = ["jowwww", "jowww", "joww", "jow", "yo", "jo"]
         for msg in m:
             if msg in message.content.lower():
                 await message.channel.send(msg)
