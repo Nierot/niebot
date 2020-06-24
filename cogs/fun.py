@@ -132,6 +132,8 @@ class Fun(commands.Cog):
     async def on_message(self, message: discord.Message):
         if message.author.bot:
             return
+        if random.randint(1, 500) == 57:
+            await message.channel.send(random.choice(["Niebot", "Hallo", "Ik ben Niebot"]))
         await self.on_message_alexa(message)
         await self.on_message_lmao(message)
         await self.on_message_best(message)
