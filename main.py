@@ -55,6 +55,8 @@ class Bot:
         self.bot.db.execute("CREATE TABLE IF NOT EXISTS niebot_channels (guild text, channel_name text, channel_id text)")
         self.bot.db.execute("CREATE TABLE IF NOT EXISTS niebotchannel_role (guild text, role_id id)")
         self.bot.db.execute("CREATE TABLE IF NOT EXISTS niebotchannel_msg (guild text, msg text, channel text)")
+        self.bot.db.execute("CREATE TABLE IF NOT EXISTS rejection (person text primary key, reject integer default 0)")
+
     
 if __name__ == "__main__":
     bot = Bot()

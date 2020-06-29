@@ -36,6 +36,7 @@ class Dromendans(commands.Cog, name="dromendans"):
     DONE Send song title + newline seperately
     TODO add a command to change your color
     TODO use member.move_to to put people in the same channel with dromendans bot
+    TODO count how many times the bot rejected someone
     """
 
     # Plays dromendans in the current voicechannel
@@ -76,6 +77,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         """
         if (random.randint(0,10) < 4):
             await ctx.send("Nee ga ik niet doen")
+            await self.increment_rejection(ctx.message.author)
         else:
             if (len(args) < 1 or len(args) > 2):
                 await ctx.send("doe het dan wel goed")
@@ -120,6 +122,7 @@ class Dromendans(commands.Cog, name="dromendans"):
             await ctx.send("laf")
             await self.voice_client[guild].disconnect()
         else:
+            await self.increment_rejection(ctx.message.author)
             await ctx.send("Lol nee")
 
 
@@ -165,6 +168,19 @@ class Dromendans(commands.Cog, name="dromendans"):
                 print(role)
             except asyncio.TimeoutError:
                 await ctx.send("Oke dan niet")
+
+
+    @commands.command(name="loserscoreboard")
+    async def rejection_scoreboard(self, ctx):
+        rejected = ""
+        amount = ""
+        for row in self.bot.db.execute("SELECT * FROM rejection"):
+            rejected += f"{row[0]}\n"
+            amount += f"{row[1]}\n"
+        embed = discord.Embed()
+        embed.add_field(name='Loser', value=rejected)
+        embed.add_field(name='Loserheid', value=amount)
+        await ctx.send(embed=embed)
 
 
     async def set_status(self, ctx, *args):
@@ -230,6 +246,12 @@ class Dromendans(commands.Cog, name="dromendans"):
 
     async def set_playing_status(self, ctx, song):
         await self.set_status(ctx, f"Ik ben nu {song} aan het spelen!")
+
+
+    async def increment_rejection(self, person):
+        self.bot.cursor.execute("INSERT OR IGNORE INTO rejection (person, reject) VALUES (?, ?)", (str(person), 0))
+        self.bot.cursor.execute("UPDATE rejection SET reject = reject + 1 WHERE person = ?", (str(person), ))
+        self.bot.db.commit()
 
 
     # The music player, repeats itself if not stopped
