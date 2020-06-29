@@ -6,3 +6,6 @@ secrets.py
 *.mp4
 geckodriver.log
 *.db
+.vscode
+*.db-journal
+buttons.jsonc

@@ -18,16 +18,24 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.bot = bot
         self.voice_client = self.bot._voice_clients
         self.stopped = {}
-        self.troep = ["Dit wordt kut", "Hier heb ik nou geen zin in", "jesus wat slecht", "ik heb deathmetal gehoord dat beter is dan dit"]
+        self.troep = ["Dit wordt kut", "Hier heb ik nou geen zin in", "jesus wat slecht", "ik heb deathmetal gehoord dat beter is dan dit", "moet dit nou"]
         self.json = {}
 
 
     """
     TODO Add a progress bar
     TODO Add a auto leave
-    TODO Add geniusApi to get lyrics
+    DONE Add geniusApi to get lyrics
     TODO Add same reaction as other people
     TODO anime character randomizer
+    TODO Use genius api Youtube links to download and play music
+    TODO Instead of repeating a song, add an option to randomize
+    TODO add database with song mp3, name, artist and (genius id optional)
+    TODO a good queuing system
+    TODO A seperate channel with a constantly updating message with the current song/progress maybe a leaderboard
+    DONE Send song title + newline seperately
+    TODO add a command to change your color
+    TODO use member.move_to to put people in the same channel with dromendans bot
     """
 
     # Plays dromendans in the current voicechannel
@@ -78,6 +86,7 @@ class Dromendans(commands.Cog, name="dromendans"):
                 volume = float(args[1])
 
             await ctx.send("Het volgende nummer is: " + music)
+            await self.set_playing_status(ctx, music)
             await ctx.send(random.choice(self.troep))
             self.stopped[ctx.message.guild.id] = False
             await self._dromendans(ctx, 'music/' + music + '.mp3', volume)
@@ -124,6 +133,103 @@ class Dromendans(commands.Cog, name="dromendans"):
             await ctx.send("doe ff normaal man")
         else:
             await self._genius_search(ctx, query)
+
+
+    @commands.command(name="set_channel")
+    async def set_channel(self, ctx, *args):
+        author = ctx.message.author
+        channel = ctx.message.channel
+        if ctx.message.author.guild_permissions.administrator:
+            msg = await ctx.send('Reageer met "Y" om dit kanaal het Niebot kanaal te maken')
+            
+            def check(message):
+                return message.author == author and message.content == 'Y'
+
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=10.0)
+                if not await self._is_niebot_channel(channel.id):
+                    self.bot.cursor.execute("INSERT INTO niebot_channels (guild, channel_name, channel_id) VALUES (?,?,?)", [str(channel.guild.id), channel.name, str(channel.id)])
+                    self.bot.db.commit()
+                else:
+                    await ctx.send("Dit is al mijn kanaal")
+
+                role = await self._get_NiebotChannel_rank(ctx.guild)
+
+                if role != -1:
+                    role_obj = await self._make_niebot_rank(ctx, msg.guild.me)
+                    role = role_obj.id
+
+                msg = await ctx.send("Status")
+                self.insert_status(msg)
+                await self._set_permissions(ctx, role)
+                print(role)
+            except asyncio.TimeoutError:
+                await ctx.send("Oke dan niet")
+
+
+    async def set_status(self, ctx, *args):
+        channel = await self._get_status_channel(ctx)
+        status = await self._get_status(channel)
+        await status.edit(content=' '.join(args))
+        
+
+    async def _get_status_channel(self, ctx):
+        for row in self.bot.cursor.execute("SELECT * FROM niebot_channels WHERE guild = ?", (str(ctx.guild.id),)):
+            channel = ctx.guild.get_channel(int(row[2]))
+            return channel
+
+
+    async def _set_permissions(self, ctx, niebot_role):
+        print(f"Niebot role {niebot_role}")
+        channel = await self._get_status_channel(ctx)
+        for role in ctx.guild.roles:
+            if role.id != niebot_role:
+                await channel.set_permissions(role, send_messages=False)
+
+
+
+    def insert_status(self, msg):
+        self.bot.cursor.execute("DELETE FROM niebotchannel_msg WHERE guild = ?", (str(msg.guild.id),))
+        self.bot.db.commit()
+        self.bot.cursor.execute("INSERT INTO niebotchannel_msg(guild, msg, channel) VALUES(?, ?, ?)", (str(msg.guild.id), str(msg.id), str(msg.channel.id)))
+        self.bot.db.commit()
+
+
+    async def _get_status(self, channel):
+        for row in self.bot.cursor.execute("SELECT msg FROM niebotchannel_msg WHERE guild = ?", (str(channel.guild.id),)):
+            return await channel.fetch_message(row[0])
+
+
+    async def _get_NiebotChannel_rank(self, guild):
+        for row in self.bot.cursor.execute("SELECT role_id FROM niebotchannel_role WHERE guild = ?", (str(guild.id),)):
+            return row[0]
+        return -1
+
+    async def _make_niebot_rank(self, ctx, member):
+        guild = ctx.guild
+        await ctx.send("Creating the role")
+        role = await guild.create_role(name="NiebotChannel")
+        self.bot.cursor.execute("INSERT INTO niebotchannel_role(guild, role_id) VALUES(?,?)", (str(guild.id), str(role.id)))
+        self.bot.db.commit()
+        await member.add_roles(discord.utils.get(ctx.guild.roles, name="NiebotChannel")) # Add role to this user
+        return role
+
+
+    # Checks if the given channel is the niebot channel
+    async def _is_niebot_channel(self, channel_id):
+        for row in self.bot.cursor.execute("SELECT * FROM niebot_channels WHERE channel_id = ?", (str(channel_id),)):
+            #print(row)
+            return True
+
+
+    async def _get_niebot_channel(self, guild):
+        for row in self.bot.cursor.execute("SELECT guild FROM niebot_channels WHERE guild = ? ", (str(guild),)):
+            print(row)
+            return row[0]
+
+
+    async def set_playing_status(self, ctx, song):
+        await self.set_status(ctx, f"Ik ben nu {song} aan het spelen!")
 
 
     # The music player, repeats itself if not stopped
@@ -190,10 +296,11 @@ class Dromendans(commands.Cog, name="dromendans"):
                 return None # In case the lyrics section isn't found
             lyrics = re.sub('(\[.*?\])*', '', lyrics)
             #lyrics = re.sub('\n{2}', '\n', lyrics)  # Gaps between verses
+            await ctx.send(name + '\n')
             if (len(lyrics) > 1900):
-                await self.split_lyrics(name + lyrics, ctx)
+                await self.split_lyrics(lyrics, ctx)
             else:
-                await ctx.send(name + lyrics)
+                await ctx.send(lyrics)
 
 
     async def split_lyrics(self, lyrics, ctx):
@@ -257,22 +364,6 @@ class Dromendans(commands.Cog, name="dromendans"):
         except Exception as e:
             print(e)
 
-
-    @commands.Cog.listener()
-    async def on_reaction_add(self, reaction, user):
-        msg = reaction.message
-        if msg.author == self.bot.user and reaction.count >= 2 and not self.count_reactions(msg.reactions) > 4:
-            pass
-            #msg.reactions)
-            # print("yeet")
-            # await self._genius_search(self, reaction=True)
-
-        
-    def count_reactions(self, reactions):
-        i = 0
-        for r in reactions:
-            i += r.count
-        return i
 
 def setup(bot):
     bot.add_cog(Dromendans(bot))

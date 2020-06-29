@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import secrets
 import aiohttp
+import sqlite3
 
 class Bot:
 
@@ -41,12 +42,20 @@ class Bot:
             headers = {}
             headers['Authorization'] = 'Bearer HzEnNuHDAYJOCIjqLI4kIHzhWIM4nZrkyjgsqLxezhF9DaKQY0ZvqVsMlkT2Zebp'
             self.bot._genius_session = aiohttp.ClientSession(headers=headers)
+            self.bot.db = sqlite3.connect('data.db')
+            self.bot.cursor = self.bot.db.cursor()
+            self.setup_db()
             print(self.bot.user.name)
             print(self.bot.user.id)
             print(discord.utils.oauth_url(self.bot.user.id))
         self.bot.run(self.token)
 
 
+    def setup_db(self):
+        self.bot.db.execute("CREATE TABLE IF NOT EXISTS niebot_channels (guild text, channel_name text, channel_id text)")
+        self.bot.db.execute("CREATE TABLE IF NOT EXISTS niebotchannel_role (guild text, role_id id)")
+        self.bot.db.execute("CREATE TABLE IF NOT EXISTS niebotchannel_msg (guild text, msg text, channel text)")
+    
 if __name__ == "__main__":
     bot = Bot()
     bot.run()
