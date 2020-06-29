@@ -155,7 +155,7 @@ class Dromendans(commands.Cog, name="dromendans"):
 
                 role = await self._get_NiebotChannel_rank(ctx.guild)
 
-                if role != -1:
+                if role == -1:
                     role_obj = await self._make_niebot_rank(ctx, msg.guild.me)
                     role = role_obj.id
 
