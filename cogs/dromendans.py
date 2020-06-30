@@ -26,7 +26,7 @@ class Dromendans(commands.Cog, name="dromendans"):
     TODO Add a progress bar
     DONE Add a auto leave
     DONE Add geniusApi to get lyrics
-    TODO Add same reaction as other people
+    DONE Add same reaction as other people
     TODO anime character randomizer
     TODO Use genius api Youtube links to download and play music
     TODO Instead of repeating a song, add an option to randomize

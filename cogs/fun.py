@@ -140,5 +140,10 @@ class Fun(commands.Cog):
         await self.on_message_jo(message)
 
 
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        await reaction.message.add_reaction(reaction)
+
+
 def setup(bot):
     bot.add_cog(Fun(bot))
