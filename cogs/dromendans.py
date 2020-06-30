@@ -24,7 +24,7 @@ class Dromendans(commands.Cog, name="dromendans"):
 
     """
     TODO Add a progress bar
-    TODO Add a auto leave
+    DONE Add a auto leave
     DONE Add geniusApi to get lyrics
     TODO Add same reaction as other people
     TODO anime character randomizer
@@ -280,7 +280,7 @@ class Dromendans(commands.Cog, name="dromendans"):
 
         while self.voice_client[guild].is_playing():
             await asyncio.sleep(1)
-            if (len(channel.members == 1)): # Lmao niebot is met al zn vrienden
+            if (len(channel.members == 1) or len(channel.members) == 0): # Lmao niebot is met al zn vrienden
                 self.stopped[guild] = True
             if self.stopped[guild]:
                 await self.set_idle_status(ctx)
