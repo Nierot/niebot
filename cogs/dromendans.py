@@ -32,11 +32,11 @@ class Dromendans(commands.Cog, name="dromendans"):
     TODO Instead of repeating a song, add an option to randomize
     TODO add database with song mp3, name, artist and (genius id optional)
     TODO a good queuing system
-    TODO A seperate channel with a constantly updating message with the current song/progress maybe a leaderboard
+    DONE/TODO A seperate channel with a constantly updating message with the current song/progress maybe a leaderboard
     DONE Send song title + newline seperately
     TODO add a command to change your color
     TODO use member.move_to to put people in the same channel with dromendans bot
-    TODO count how many times the bot rejected someone
+    DONE count how many times the bot rejected someone
     """
 
     # Plays dromendans in the current voicechannel
@@ -247,6 +247,9 @@ class Dromendans(commands.Cog, name="dromendans"):
     async def set_playing_status(self, ctx, song):
         await self.set_status(ctx, f"Ik ben nu {song} aan het spelen!")
 
+    async def set_idle_status(self, ctx):
+        await self.set_status(ctx, f"Ik doe nu evenveel als ken")
+
 
     async def increment_rejection(self, person):
         self.bot.cursor.execute("INSERT OR IGNORE INTO rejection (person, reject) VALUES (?, ?)", (str(person), 0))
@@ -277,7 +280,10 @@ class Dromendans(commands.Cog, name="dromendans"):
 
         while self.voice_client[guild].is_playing():
             await asyncio.sleep(1)
+            if (len(channel.members == 1)): # Lmao niebot is met al zn vrienden
+                self.stopped[guild] = True
             if self.stopped[guild]:
+                await self.set_idle_status(ctx)
                 break
             if not self.voice_client[guild].is_playing():
                 await self._dromendans(ctx, music, volume)
