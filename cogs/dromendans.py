@@ -21,6 +21,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.skip = {}
         self.troep = ["Dit wordt kut", "Hier heb ik nou geen zin in", "jesus wat slecht", "ik heb deathmetal gehoord dat beter is dan dit", "moet dit nou"]
         self.json = {}
+        self.last = {}
 
 
     """
@@ -195,6 +196,7 @@ class Dromendans(commands.Cog, name="dromendans"):
             await ctx.send("Nee ga ik niet doen")
             await self.increment_rejection(ctx.message.author)
         else:
+            print(args)
             if (len(args) == 1 or len(args) == 2):
                 if (len(args) > 2):
                     await ctx.send("doe het dan wel goed")
@@ -203,12 +205,12 @@ class Dromendans(commands.Cog, name="dromendans"):
                 volume = 1.0
                 if (len(args) == 2):
                     volume = float(args[1])
-                    await ctx.send("Het volgende nummer is: " + music)
-                    await self.set_playing_status(ctx, music)
-                    await ctx.send(random.choice(self.troep))
-                    self.stopped[ctx.message.guild.id] = False
-                    self.skip[ctx.message.guild.id] = False
-                    await self._dromendans(ctx, 'music/' + music + '.mp3', volume, True)
+                await ctx.send("Het volgende nummer is: " + music)
+                await self.set_playing_status(ctx, music)
+                await ctx.send(random.choice(self.troep))
+                self.stopped[ctx.message.guild.id] = False
+                self.skip[ctx.message.guild.id] = False
+                await self._dromendans(ctx, 'music/' + music + '.mp3', volume, True)
             else:
                 await ctx.send("Slechte keus")
                 self.stopped[ctx.message.guild.id] = False
@@ -304,7 +306,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.bot.db.commit()
 
 
-    # The music player, repeats itself if not stopped
+    # The music player, repeats itself
     async def _dromendans(self, ctx, music, volume, shuffle) -> None:
         channel = ctx.message.author.voice.channel
         guild = ctx.message.author.guild.id
@@ -328,9 +330,11 @@ class Dromendans(commands.Cog, name="dromendans"):
         while self.voice_client[guild].is_playing():
             await asyncio.sleep(1)
             if (len(channel.members) == 1 or len(channel.members) == 0): # Lmao niebot is met al zn vrienden
+                await ctx.send("Laten jullie mij hier nou achter?")
                 self.stopped[guild] = True
             if self.stopped[guild]:
                 await self.set_idle_status(ctx)
+                await self.voice_client[guild].disconnect()
                 break
             if self.skip[guild]:
                 self.skip[guild] = False
