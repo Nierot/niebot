@@ -18,6 +18,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.bot = bot
         self.voice_client = self.bot._voice_clients
         self.stopped = {}
+        self.skip = {}
         self.troep = ["Dit wordt kut", "Hier heb ik nou geen zin in", "jesus wat slecht", "ik heb deathmetal gehoord dat beter is dan dit", "moet dit nou"]
         self.json = {}
 
@@ -37,6 +38,7 @@ class Dromendans(commands.Cog, name="dromendans"):
     TODO add a command to change your color
     TODO use member.move_to to put people in the same channel with dromendans bot
     DONE count how many times the bot rejected someone
+    TODO automatically send lyrics in status channel when a known song is being played
     """
 
     # Plays dromendans in the current voicechannel
@@ -47,7 +49,8 @@ class Dromendans(commands.Cog, name="dromendans"):
         """
         await ctx.send("Dromendans Xdddddd")
         self.stopped[ctx.message.guild.id] = False
-        await self._dromendans(ctx, 'music/dromendans.mp3', 1.0)
+        self.skip[ctx.message.guild.id] = False
+        await self._dromendans(ctx, 'music/dromendans.mp3', 1.0, False)
 
 
     # Plays the putin walking song
@@ -59,7 +62,8 @@ class Dromendans(commands.Cog, name="dromendans"):
         """
         await ctx.send("Gebruik de troep command pls") # kinda deprecated
         self.stopped[ctx.message.guild.id] = False
-        await self._dromendans(ctx, 'music/putin.mp3', 1.0)
+        self.skip[ctx.message.guild.id] = False
+        await self._dromendans(ctx, 'music/putin.mp3', 1.0, False)
 
 
     # Returns the upload url
@@ -91,7 +95,8 @@ class Dromendans(commands.Cog, name="dromendans"):
             await self.set_playing_status(ctx, music)
             await ctx.send(random.choice(self.troep))
             self.stopped[ctx.message.guild.id] = False
-            await self._dromendans(ctx, 'music/' + music + '.mp3', volume)
+            self.skip[ctx.message.guild.id] = False
+            await self._dromendans(ctx, 'music/' + music + '.mp3', volume, False)
 
 
     # List off all available music
@@ -119,6 +124,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         guild = ctx.message.author.guild.id
         if (random.randint(0,10) > 3):
             self.stopped[guild] = True
+            self.skip[guild] = False
             await ctx.send("laf")
             await self.voice_client[guild].disconnect()
         else:
@@ -181,6 +187,47 @@ class Dromendans(commands.Cog, name="dromendans"):
         embed.add_field(name='Loser', value=rejected)
         embed.add_field(name='Loserheid', value=amount)
         await ctx.send(embed=embed)
+
+
+    @commands.command(name="shuffle")
+    async def shuffle(self, ctx, *args):
+        if (random.randint(0,10) < 4):
+            await ctx.send("Nee ga ik niet doen")
+            await self.increment_rejection(ctx.message.author)
+        else:
+            if (len(args) == 1 or len(args) == 2):
+                if (len(args) > 2):
+                    await ctx.send("doe het dan wel goed")
+                    return
+                music = args[0]
+                volume = 1.0
+                if (len(args) == 2):
+                    volume = float(args[1])
+                    await ctx.send("Het volgende nummer is: " + music)
+                    await self.set_playing_status(ctx, music)
+                    await ctx.send(random.choice(self.troep))
+                    self.stopped[ctx.message.guild.id] = False
+                    self.skip[ctx.message.guild.id] = False
+                    await self._dromendans(ctx, 'music/' + music + '.mp3', volume, True)
+            else:
+                await ctx.send("Slechte keus")
+                self.stopped[ctx.message.guild.id] = False
+                self.skip[ctx.message.guild.id] = False
+                await self._dromendans(ctx, self.random_song(), 1.0, True)
+
+
+    @commands.command(name="skip")
+    async def skip(self, ctx):
+        if (random.randint(0,10) < 1):
+            await ctx.send("lmao")
+            await self.increment_rejection(ctx.message.author)
+        else:
+            await ctx.send("miet")
+            self.skip[ctx.message.guild.id] = True
+
+
+    def random_song(self):
+        return 'music/' + random.choice(listdir('music'))
 
 
     async def set_status(self, ctx, *args):
@@ -258,7 +305,7 @@ class Dromendans(commands.Cog, name="dromendans"):
 
 
     # The music player, repeats itself if not stopped
-    async def _dromendans(self, ctx, music, volume) -> None:
+    async def _dromendans(self, ctx, music, volume, shuffle) -> None:
         channel = ctx.message.author.voice.channel
         guild = ctx.message.author.guild.id
         try:
@@ -280,15 +327,22 @@ class Dromendans(commands.Cog, name="dromendans"):
 
         while self.voice_client[guild].is_playing():
             await asyncio.sleep(1)
-            if (len(channel.members == 1) or len(channel.members) == 0): # Lmao niebot is met al zn vrienden
+            if (len(channel.members) == 1 or len(channel.members) == 0): # Lmao niebot is met al zn vrienden
                 self.stopped[guild] = True
             if self.stopped[guild]:
                 await self.set_idle_status(ctx)
                 break
+            if self.skip[guild]:
+                self.skip[guild] = False
+                self.voice_client[guild].stop()
+                await self._dromendans(ctx, self.random_song(), volume, True)
             if not self.voice_client[guild].is_playing():
-                await self._dromendans(ctx, music, volume)
-
+                if shuffle:
+                    await self._dromendans(ctx, self.random_song(), volume, True)
+                else:
+                    await self._dromendans(ctx, music, volume, False)
     
+
     async def _genius_json(self, ctx, song_id):
         url = 'https://api.genius.com/songs/' + str(song_id)
         headers = {}
