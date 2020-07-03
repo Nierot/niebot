@@ -21,7 +21,7 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.skip = {}
         self.troep = ["Dit wordt kut", "Hier heb ik nou geen zin in", "jesus wat slecht", "ik heb deathmetal gehoord dat beter is dan dit", "moet dit nou"]
         self.json = {}
-        self.last = {}
+        self.next = {}
 
 
     """
@@ -40,6 +40,8 @@ class Dromendans(commands.Cog, name="dromendans"):
     TODO use member.move_to to put people in the same channel with dromendans bot
     DONE count how many times the bot rejected someone
     TODO automatically send lyrics in status channel when a known song is being played
+    TODO earrape bitcrusher ffmpeg
+    TODO more jpeg!
     """
 
     # Plays dromendans in the current voicechannel
@@ -74,7 +76,7 @@ class Dromendans(commands.Cog, name="dromendans"):
 
 
     # Plays a mp3 from the /music folder
-    @commands.command(name="troep")
+    @commands.command(name="troep", aliases=["play"])
     async def troep(self, ctx, *args):
         """
         speelt die troep af van jullie
@@ -177,6 +179,16 @@ class Dromendans(commands.Cog, name="dromendans"):
                 await ctx.send("Oke dan niet")
 
 
+    @commands.command(name="skip")
+    async def skip_song(self, ctx, *args):
+        if (random.randint(0,10) < 1):
+            await ctx.send("lmao")
+            await self.increment_rejection(ctx.message.author)
+        else:
+            await ctx.send("miet")
+            self.skip[ctx.message.guild.id] = True
+
+
     @commands.command(name="loserscoreboard")
     async def rejection_scoreboard(self, ctx):
         rejected = ""
@@ -188,6 +200,17 @@ class Dromendans(commands.Cog, name="dromendans"):
         embed.add_field(name='Loser', value=rejected)
         embed.add_field(name='Loserheid', value=amount)
         await ctx.send(embed=embed)
+
+
+    @commands.command(name="next")
+    async def skip(self, ctx, *args):
+        if (len(args) != 1):
+            await ctx.send("doe ff normaal man")
+        else:
+            await ctx.send('ja prima')
+            if self.next[ctx.message.guild.id] == None:
+                self.next[ctx.message.guild.id] = []
+            self.next[ctx.message.guild.id].append(args(0))
 
 
     @commands.command(name="shuffle")
@@ -216,16 +239,6 @@ class Dromendans(commands.Cog, name="dromendans"):
                 self.stopped[ctx.message.guild.id] = False
                 self.skip[ctx.message.guild.id] = False
                 await self._dromendans(ctx, self.random_song(), 1.0, True)
-
-
-    @commands.command(name="skip")
-    async def skip(self, ctx):
-        if (random.randint(0,10) < 1):
-            await ctx.send("lmao")
-            await self.increment_rejection(ctx.message.author)
-        else:
-            await ctx.send("miet")
-            self.skip[ctx.message.guild.id] = True
 
 
     def random_song(self):
@@ -294,10 +307,17 @@ class Dromendans(commands.Cog, name="dromendans"):
 
 
     async def set_playing_status(self, ctx, song):
-        await self.set_status(ctx, f"Ik ben nu {song} aan het spelen!")
+        await self.bot.change_presence(status=discord.Status.online, activity=discord.Activity(name=song, type=discord.ActivityType.listening))
+        try:
+            await self.set_status(ctx, f"Ik ben nu {song} aan het spelen!")
+        except Exception as e:
+            print(e)
 
     async def set_idle_status(self, ctx):
-        await self.set_status(ctx, f"Ik doe nu evenveel als ken")
+        try:
+            await self.set_status(ctx, f"Ik doe nu evenveel als ken")
+        except Exception as e:
+            print(e)
 
 
     async def increment_rejection(self, person):
@@ -306,16 +326,26 @@ class Dromendans(commands.Cog, name="dromendans"):
         self.bot.db.commit()
 
 
+    def check_if_song_exists(self, song):
+        return os.path.isfile(song)
+
+
     # The music player, repeats itself
     async def _dromendans(self, ctx, music, volume, shuffle) -> None:
         channel = ctx.message.author.voice.channel
         guild = ctx.message.author.guild.id
-        try:
-            source = discord.FFmpegPCMAudio(music)
-            source = discord.PCMVolumeTransformer(source, volume)
-        except Exception as e:
-            print(e)
+        await self.set_playing_status(ctx, music.split("/")[1])
+        source = discord.FFmpegPCMAudio(music)
+        source = discord.PCMVolumeTransformer(source, volume)
+        
+        if not self.check_if_song_exists(music):
             await ctx.send("weet je zeker dat je kan spellen?")
+            try:
+                self.voice_client[guild].disconnect()
+                self.stopped[guild] = False
+                self.skip[guild] = False
+            except Exception as e:
+                pass
             return
         try:
             self.voice_client[guild] = await channel.connect()
@@ -330,7 +360,8 @@ class Dromendans(commands.Cog, name="dromendans"):
         while self.voice_client[guild].is_playing():
             await asyncio.sleep(1)
             if (len(channel.members) == 1 or len(channel.members) == 0): # Lmao niebot is met al zn vrienden
-                await ctx.send("Laten jullie mij hier nou achter?")
+                if (self.voice_client[guild] == None):
+                    await ctx.send("Laten jullie mij hier nou achter?")
                 self.stopped[guild] = True
             if self.stopped[guild]:
                 await self.set_idle_status(ctx)
