@@ -208,9 +208,9 @@ class Dromendans(commands.Cog, name="dromendans"):
             await ctx.send("doe ff normaal man")
         else:
             await ctx.send('ja prima')
-            if self.next[ctx.message.guild.id] == None:
+            if self.next.get(ctx.message.guild.id) == None:
                 self.next[ctx.message.guild.id] = []
-            self.next[ctx.message.guild.id].append(args(0))
+            self.next[ctx.message.guild.id].append(f'music/{args[0]}.mp3')
 
 
     @commands.command(name="shuffle")
@@ -311,13 +311,14 @@ class Dromendans(commands.Cog, name="dromendans"):
         try:
             await self.set_status(ctx, f"Ik ben nu {song} aan het spelen!")
         except Exception as e:
-            print(e)
+            pass
 
     async def set_idle_status(self, ctx):
+        await self.bot.change_presence(status=discord.Status.online, activity=discord.Activity(name='helemaal niks', type=discord.ActivityType.playing))
         try:
             await self.set_status(ctx, f"Ik doe nu evenveel als ken")
         except Exception as e:
-            print(e)
+            pass
 
 
     async def increment_rejection(self, person):
@@ -364,14 +365,27 @@ class Dromendans(commands.Cog, name="dromendans"):
                     await ctx.send("Laten jullie mij hier nou achter?")
                 self.stopped[guild] = True
             if self.stopped[guild]:
-                await self.set_idle_status(ctx)
                 await self.voice_client[guild].disconnect()
+                await self.set_idle_status(ctx)
                 break
             if self.skip[guild]:
                 self.skip[guild] = False
                 self.voice_client[guild].stop()
-                await self._dromendans(ctx, self.random_song(), volume, True)
+                if self.next.get(guild) != None and len(self.next.get(guild)) != 0:
+                    song = self.next[guild][0]
+                    self.next[guild].pop(0)
+                    await self._dromendans(ctx, song, volume, shuffle)
+                else:
+                    await self._dromendans(ctx, self.random_song(), volume, True)
             if not self.voice_client[guild].is_playing():
+                if self.stopped.get(guild) == None or self.stopped.get(guild) == True:
+                    await self.voice_client[guild].disconnect()
+                    await self.set_idle_status(ctx)
+                    break
+                if len(self.next[guild]) != 0:
+                    song = self.next[guild][0]
+                    self.next[guild].pop(0)
+                    await self._dromendans(ctx, song, volume, shuffle)
                 if shuffle:
                     await self._dromendans(ctx, self.random_song(), volume, True)
                 else:

@@ -9,3 +9,4 @@ geckodriver.log
 .vscode
 *.db-journal
 buttons.jsonc
+*.mp3
