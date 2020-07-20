@@ -7,6 +7,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 import re
 import os
+import youtube_dl
 
 class Dromendans(commands.Cog, name="dromendans"):
     """
@@ -42,6 +43,7 @@ class Dromendans(commands.Cog, name="dromendans"):
     TODO automatically send lyrics in status channel when a known song is being played
     TODO earrape bitcrusher ffmpeg
     TODO more jpeg!
+    TODO saucenao
     """
 
     # Plays dromendans in the current voicechannel
@@ -239,6 +241,13 @@ class Dromendans(commands.Cog, name="dromendans"):
                 self.stopped[ctx.message.guild.id] = False
                 self.skip[ctx.message.guild.id] = False
                 await self._dromendans(ctx, self.random_song(), 1.0, True)
+
+
+    @commands.command(name="download")
+    async def download_command(self, ctx, *args):
+        print(args)
+        await ctx.send(f'Downloading {args}')
+        await self._download_youtube_mp3(args[0])
 
 
     def random_song(self):
@@ -494,6 +503,31 @@ class Dromendans(commands.Cog, name="dromendans"):
                     await ctx.send("mogool")
         except Exception as e:
             print(e)
+
+
+    async def _download_youtube_mp3(self, link, name):
+        print(f'Downloading the mp3 from {link}')
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+            }],
+            'logger': YDLLogger()
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([link])
+
+class YDLLogger(object):
+
+    def debug(self, msg):
+        print(f'[YDL-Debug]: {msg}')
+
+    def warning(self, msg):
+        print(f'[YDL-Warning]: {msg}')
+
+    def error(self, msg):
+        print(f'[YDL-Error]: {msg}')
 
 
 def setup(bot):
