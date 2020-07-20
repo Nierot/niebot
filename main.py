@@ -42,7 +42,7 @@ class Bot:
             headers = {}
             headers['Authorization'] = 'Bearer HzEnNuHDAYJOCIjqLI4kIHzhWIM4nZrkyjgsqLxezhF9DaKQY0ZvqVsMlkT2Zebp'
             self.bot._genius_session = aiohttp.ClientSession(headers=headers)
-            self.bot.db = sqlite3.connect('data.db')
+            self.bot.db = sqlite3.connect('music/data.db')
             self.bot.cursor = self.bot.db.cursor()
             self.setup_db()
             print(self.bot.user.name)

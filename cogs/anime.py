@@ -46,8 +46,8 @@ class Anime(commands.Cog, name="Anime"):
                     html = BeautifulSoup(await r.text(), 'lxml')
                     div = html.find_all('div', class_='pages')[0]
                     div = div.find_all('div')[2]
-                    print(div)
-                    await ctx.send(div)
+                    #print(div)
+                    #await ctx.send(div)
                     result = ''
                     result += f'Tags: {div.table.img["alt"].split(":")[2]} \n'
                     result += f'*{str(div.table.find_all("tr")[4]).split("<")[2][3:]}* \n'
