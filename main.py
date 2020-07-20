@@ -15,7 +15,7 @@ class Bot:
         self.bot._queue = {}
         self.bot._playing = {}
         self.bot._debug = False
-        self.extensions = [ 'cogs.admin', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun', 'cogs.dromendans'] #,'cogs.youtube', 'cogs.cleverbot']
+        self.extensions = [ 'cogs.admin', 'cogs.anime', 'cogs.mc', 'cogs.pils', 'cogs.text', 'cogs.fun', 'cogs.dromendans'] #,'cogs.youtube', 'cogs.cleverbot']
 
 
     def load_extensions(self):
